@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+        "http://www.checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+    <suppress checks="LineLength" files="."/>
+    <suppress checks="JavadocPackage" files="."/>
+    <suppress checks="MissingJavadocMethod" files="."/>
+    <suppress checks="JavadocVariable" files="."/>
+    <suppress checks="HiddenField" files="."/>
+    <suppress checks="VisibilityModifier" files="SwaggerObject"/>
+</suppressions>

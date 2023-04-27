@@ -1,0 +1,32 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/store/order/.*"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Mocked-Test-Header": "This is mocked test header",
+          "Content-Type": "application/json"
+        },
+        "body": "[]"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/store/order"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Mocked-Test-Header": "This is mocked test header",
+          "content-type": "application/json"
+        },
+        "body": "[{\"id\":1,\"petId\":666,\"quantity\":1\"status\":\"placed\"]"
+      }
+    }
+  ]
+}
