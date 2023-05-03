@@ -30,12 +30,16 @@ lint-job:
   stage: lint
   script:
     - mvn checkstyle:checkstyle
-  allow_failure: true
+
+mocked-test-job:
+  stage: test
+  script:
+    - mvn -DisMocked=true surefire:test
 
 test-job:
   stage: test
   script:
-    - mvn surefire-report:report -Dtest=PetStoreTest
+    - mvn -DisMocked=false surefire-report:report
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     paths:

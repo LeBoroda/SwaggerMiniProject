@@ -10,4 +10,5 @@
     <suppress checks="JavadocVariable" files="."/>
     <suppress checks="HiddenField" files="."/>
     <suppress checks="VisibilityModifier" files="SwaggerObject"/>
+    <suppress checks="MagicNumber" files="."/>
 </suppressions>

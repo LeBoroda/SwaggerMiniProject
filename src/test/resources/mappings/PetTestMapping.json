@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPathPattern": "/store/order/.*"
+        "urlPathPattern": "/pet/.*"
       },
       "response": {
         "status": 200,
@@ -11,13 +11,13 @@
           "Mocked-Test-Header": "This is mocked test header",
           "Content-Type": "application/json"
         },
-        "body": "{\"id\": 96}"
+        "body": "{\"id\": 69}"
       }
     },
     {
       "request": {
         "method": "DELETE",
-        "urlPathPattern": "/store/order/.*"
+        "urlPathPattern": "/pet/.*"
       },
       "response": {
         "status": 200,
@@ -31,7 +31,7 @@
     {
       "request": {
         "method": "POST",
-        "urlPathPattern": "/store/order"
+        "urlPathPattern": "/pet"
       },
       "response": {
         "status": 200,
@@ -39,7 +39,7 @@
           "Mocked-Test-Header": "This is mocked test header",
           "content-type": "application/json"
         },
-        "body": "{\"id\": 96}"
+        "body": "{\"id\": 69}"
       }
     }
   ]

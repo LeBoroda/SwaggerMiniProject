@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public final class TestHeaderInterceptor implements Interceptor {
+
     @NotNull
     @Override
     public Response intercept(@NotNull final Chain chain) throws IOException {

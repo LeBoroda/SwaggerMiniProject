@@ -1,39 +1,46 @@
 import com.github.tomakehurst.wiremock.WireMockServer;
-import data.OrderStatusData;
+import data.PetCategoryData;
+import data.PetTagsData;
 import mock.Mocker;
-import okhttp3.*;
+
+import okhttp3.Response;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;;
 import org.junit.jupiter.params.provider.CsvSource;
 import petstore.Order;
+import petstore.Pet;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 
 public class PetStoreTest {
-    private final Order order = new Order(1, 13, 1, "2023-04-22T20:16:10.093Z",
-            OrderStatusData.PLACED.getName());
-    private final WireMockServer wireMockServer = new WireMockServer(options().port(18389));
+    private final Order order = new Order(new Pet(PetCategoryData.DOGS, "Sharik", PetTagsData.TESTDOG), 1);
+    private static final WireMockServer wireMockServer = new WireMockServer(options().port(18389));
+
+    @BeforeAll
+    public static void setup() {
+        wireMockServer.start();
+        Mocker.setIsMocked((System.getProperty("isMocked")));
+    }
 
     @ParameterizedTest
     @CsvSource("200, application/json")
     public void orderPlacementTest(int arg1, String arg2) {
-        Mocker.setIsMocked(false);
-        try (Response response = order.postOrder()) {
+
+        try (Response response = order.placeOrderInPetStore()) {
             Assertions.assertEquals(arg2, response.headers().values("content-type").get(0));
             Assertions.assertEquals(arg1, response.code());
         }
+        Assertions.assertEquals(arg1, order.getOrderPet().deletePet().code());
+        Assertions.assertEquals(arg1, order.deleteOrderFromSystem().code());
     }
 
-    @Test
-    public void mockedOrderPlacementTest() {
-        Mocker.setIsMocked(true);
-        wireMockServer.start();
-        try (Response response = order.postOrder()) {
-            Assertions.assertEquals("application/json", response.headers().values("content-type").get(0));
-            Assertions.assertEquals(200, response.code());
-        }
+
+    @AfterAll
+    public static void shutDown() {
         wireMockServer.stop();
     }
+
 }

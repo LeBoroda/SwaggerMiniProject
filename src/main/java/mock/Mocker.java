@@ -12,8 +12,9 @@ public final class Mocker {
         return Mocker.isMocked;
     }
 
-    public static void setIsMocked(final boolean isMocked) {
-        Mocker.isMocked = isMocked;
+    public static void setIsMocked(final String argument) {
+        boolean mockStatus = Boolean.parseBoolean(argument);
+        Mocker.isMocked = mockStatus;
     }
 
     public static String getUrl() {
