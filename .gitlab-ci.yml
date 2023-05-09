@@ -35,7 +35,14 @@ lint-job:
 mocked-test-job:
   stage: mocked_test
   script:
-    - mvn -DisMocked=true surefire:test
+    - mvn -DisMocked=true surefire-report:report
+  artifacts:
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    paths:
+      - "**/target"
+    reports:
+      junit:
+        - "**/target/*-reports/TEST-*.xml"
 
 test-job:
   stage: test
