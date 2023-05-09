@@ -88,7 +88,7 @@ public final class Order extends SwaggerObject {
         return client.call(request);
     }
 
-    public Response placeOrderInPetStore() {
+    private Response placeOrderInPetStore() {
         Assertions.assertEquals(200, pet.postPet().code());
         Assertions.assertEquals(200, pet.getPet().code());
 
@@ -96,5 +96,13 @@ public final class Order extends SwaggerObject {
         postOrder();
         log().info("Getting order from system");
         return getOrder();
+    }
+
+    public Order runOrderPlacementTest(int code, String header) {
+        try (Response response = placeOrderInPetStore()) {
+            Assertions.assertEquals(header, response.headers().values("content-type").get(0));
+            Assertions.assertEquals(code, response.code());
+        }
+        return this;
     }
 }

@@ -29,10 +29,7 @@ public class PetStoreTest {
     @CsvSource("200, application/json")
     public void orderPlacementTest(int arg1, String arg2) {
 
-        try (Response response = order.placeOrderInPetStore()) {
-            Assertions.assertEquals(arg2, response.headers().values("content-type").get(0));
-            Assertions.assertEquals(arg1, response.code());
-        }
+        order.runOrderPlacementTest(arg1, arg2);
         Assertions.assertEquals(arg1, order.getOrderPet().deletePet().code());
         Assertions.assertEquals(arg1, order.deleteOrderFromSystem().code());
     }
