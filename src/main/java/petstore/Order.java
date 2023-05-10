@@ -1,22 +1,15 @@
 package petstore;
 
-import api.IJsonable;
-import api.store.OrderJson;
 import data.OrderStatusData;
-import data.OrderUrlData;
-import mock.Mocker;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.junit.jupiter.api.Assertions;
-
+import servise.OrderService;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import static okhttp.Client.JSON;
 
 public final class Order extends SwaggerObject {
     private final int id;
@@ -26,7 +19,7 @@ public final class Order extends SwaggerObject {
     private final String shipStatus;
     private final boolean isComplete;
     private final Pet pet;
-    private final IJsonable orderJson = new OrderJson();
+    OrderService orderService = new OrderService(this);
 
     public Order(final Pet pet, final int quantity) {
         super();
@@ -46,63 +39,44 @@ public final class Order extends SwaggerObject {
         return formatter.format(offsetDateTime);
     }
 
-    private String getShipStatus() {
+    public String getShipStatus() {
         return OrderStatusData.PLACED.getName();
     }
 
-    public String getPostJson() {
-        return String.format(orderJson.getPostJson(), this.id, this.petId, this.quantity, this.shipDate,
-                this.shipStatus, this.isComplete);
+    public int getId() {
+        return id;
     }
 
-    public Pet getOrderPet() {
-        return this.pet;
+    public int getPetId() {
+        return petId;
     }
 
-    private Response postOrder() {
-
-        RequestBody requestBody = RequestBody.create(getPostJson(), JSON);
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + OrderUrlData.POST.getName())
-                .post(requestBody)
-                .build();
-        return client.call(request);
+    public int getQuantity() {
+        return quantity;
     }
 
-    private Response getOrder() {
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + String.format(OrderUrlData.GET.getName(), this.id))
-                .get()
-                .build();
-
-        return client.call(request);
+    public String getShipDate() {
+        return shipDate;
     }
 
-    public Response deleteOrderFromSystem() {
-        log().info("Deleting order from system");
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + String.format(OrderUrlData.DELETE.getName(), this.id))
-                .delete()
-                .build();
-
-        return client.call(request);
+    public boolean isComplete() {
+        return isComplete;
     }
 
     private Response placeOrderInPetStore() {
-        Assertions.assertEquals(200, pet.postPet().code());
-        Assertions.assertEquals(200, pet.getPet().code());
+        Assertions.assertEquals(200, pet.postPetInPetStore().code());
+        Assertions.assertEquals(200, pet.getPetFromPetStore().code());
 
-        log().info("Placing order in petstore");
-        postOrder();
-        log().info("Getting order from system");
-        return getOrder();
+        orderService.postOrder();
+        return orderService.getOrder(this);
     }
 
-    public Order runOrderPlacementTest(int code, String header) {
+    public void runOrderPlacementTest(int code, String header) {
         try (Response response = placeOrderInPetStore()) {
             Assertions.assertEquals(header, response.headers().values("content-type").get(0));
             Assertions.assertEquals(code, response.code());
         }
-        return this;
+        Assertions.assertEquals(code, pet.deletePetFromSystem().code());
+        Assertions.assertEquals(code, orderService.deleteOrder(this).code());
     }
 }

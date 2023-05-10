@@ -3,9 +3,7 @@ import data.PetCategoryData;
 import data.PetTagsData;
 import mock.Mocker;
 
-import okhttp3.Response;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -30,8 +28,7 @@ public class PetStoreTest {
     public void orderPlacementTest(int arg1, String arg2) {
 
         order.runOrderPlacementTest(arg1, arg2);
-        Assertions.assertEquals(arg1, order.getOrderPet().deletePet().code());
-        Assertions.assertEquals(arg1, order.deleteOrderFromSystem().code());
+
     }
 
 

@@ -1,17 +1,11 @@
 package petstore;
 
-import api.IJsonable;
-import api.store.PetJson;
 import data.PetCategoryData;
 import data.PetStatusData;
 import data.PetTagsData;
-import data.PetUrlData;
-import mock.Mocker;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
+import servise.PetService;
 
-import static okhttp.Client.JSON;
 
 public final class Pet extends SwaggerObject {
     private final int petId;
@@ -22,7 +16,7 @@ public final class Pet extends SwaggerObject {
     private final int tagId;
     private final String tagName;
     private final String petStatus;
-    private final IJsonable petJson = new PetJson();
+    private final PetService petService = new PetService(this);
 
     public Pet(final PetCategoryData petCategoryId, final String petName, final PetTagsData petTagId) {
         super();
@@ -60,39 +54,43 @@ public final class Pet extends SwaggerObject {
         }
     }
 
-    private String getPostJson() {
-        return String.format(petJson.getPostJson(), this.petId, this.categoryId, this.categoryName, this.petName, this.photoUrl,
-                this.tagId, this.tagName, this.petStatus);
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    protected Response postPet() {
-        log().info("Creating pet in system");
-        RequestBody requestBody = RequestBody.create(getPostJson(), JSON);
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + PetUrlData.POST.getName())
-                .post(requestBody)
-                .build();
-
-        return client.call(request);
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    protected Response getPet() {
-        log().info("Getting pet from system");
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + String.format(PetUrlData.GET.getName(), this.petId))
-                .get()
-                .build();
-
-        return client.call(request);
+    public String getPetName() {
+        return petName;
     }
 
-    public Response deletePet() {
-        log().info("Deleting pet from system");
-        request = new Request.Builder()
-                .url(Mocker.getUrl() + String.format(PetUrlData.DELETE.getName(), this.petId))
-                .delete()
-                .build();
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
 
-        return client.call(request);
+    public int getTagId() {
+        return tagId;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public String getPetStatus() {
+        return petStatus;
+    }
+
+    public Response postPetInPetStore() {
+        return petService.postPet();
+    }
+
+    public Response getPetFromPetStore() {
+        return petService.getPet(this);
+    }
+
+    public Response deletePetFromSystem() {
+        return petService.deletePet(this);
     }
 }
